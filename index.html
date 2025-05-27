@@ -106,7 +106,7 @@
     <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   </div>
   <!-- Google Sign-In кнопка -->
-  <div style="position:absolute; top:20px; right:120px; z-index:999;">
+  <div id="google-signin-container" style="position:absolute; top:20px; right:120px; z-index:999;">
     <div id="g_id_onload"
          data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
          data-callback="handleCredentialResponse"
@@ -121,7 +121,6 @@
          data-logo_alignment="center">
     </div>
   </div>
-
   <!-- Профиль Google -->
   <!-- Google OAuth -->
   <div id="google-profile" style="position:absolute; top:20px; right:20px; z-index:1000;"></div>
