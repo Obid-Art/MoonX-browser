@@ -103,10 +103,10 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <!-- Панель с кнопками в левом верхнем углу -->
+  <!-- Кнопки темы и голосового ввода в левом верхнем углу -->
   <div style="position: absolute; top: 20px; left: 20px; display: flex; gap: 10px; z-index: 1000;">
-    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-    <button class="voice-toggle" onclick="startVoice()">🎤</button>
+    <button onclick="toggleTheme()">🌙</button>
+    <button onclick="startVoice()">🎤</button>
   </div>
   <!-- Google Sign In Button (в правом верхнем углу) -->
   <div style="position:absolute; top:20px; right:180px; z-index:999;">
