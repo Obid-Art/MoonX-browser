@@ -216,7 +216,10 @@
       const email = localStorage.getItem("user_email");
       const picture = localStorage.getItem("user_picture");
       if (!name || !email) return;
-
+         
+      // Скрываем кнопку входа
+      document.getElementById("google-signin-container")?.classList.add("hidden");
+       
       const container = document.getElementById("google-profile");
       container.innerHTML = `
         <div style="position:relative;">
