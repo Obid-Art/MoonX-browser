@@ -123,6 +123,7 @@
   </div>
 
   <!-- Профиль Google -->
+  <!-- Google OAuth -->
   <div id="google-profile" style="position:absolute; top:20px; right:20px; z-index:1000;"></div>
 
   <div class="logo">MoonX</div>
@@ -141,7 +142,25 @@
   <div class="bookmarks" id="bookmarks"></div>
 
   <script>
+    // Настройки
     let currentEngine = localStorage.getItem('engine') || 'yandex';
+    const defaultBookmarks = [
+      { name: 'YouTube', url: 'https://youtube.com' },
+      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com' }
+    ];
+
+    function renderBookmarks() {
+      const container = document.getElementById('bookmarks');
+      container.innerHTML = '';
+      defaultBookmarks.forEach(b => {
+        const btn = document.createElement('button');
+        btn.textContent = b.name;
+        btn.onclick = () => window.open(b.url, '_blank');
+        container.appendChild(btn);
+      });
+    }
 
     function setEngine(engine) {
       currentEngine = engine;
@@ -163,7 +182,8 @@
         ? `https://yandex.ru/search/?text=${encodeURIComponent(query)}`
         : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       window.open(url, '_blank');
-    });   
+    });
+   
     <!-- Основной JS код -->
     function toggleTheme() {
       const darkMode = document.body.classList.toggle('dark');
@@ -178,23 +198,6 @@
         document.querySelector('.theme-toggle').textContent = '☀️';
       }
     });    
-    const defaultBookmarks = [
-      { name: 'YouTube', url: 'https://youtube.com' },
-      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
-      { name: 'GitHub', url: 'https://github.com' },
-      { name: 'ChatGPT', url: 'https://chat.openai.com' }
-    ];
-
-    function renderBookmarks() {
-      const container = document.getElementById('bookmarks');
-      container.innerHTML = '';
-      defaultBookmarks.forEach(b => {
-        const btn = document.createElement('button');
-        btn.textContent = b.name;
-        btn.onclick = () => window.open(b.url, '_blank');
-        container.appendChild(btn);
-      });
-    }
 
     function handleCredentialResponse(response) {
       const data = parseJwt(response.credential);
@@ -214,42 +217,38 @@
       const email = localStorage.getItem("user_email");
       const picture = localStorage.getItem("user_picture");
       if (!name || !email) return;
-       
-      document.querySelector(".g_id_signin")?.classList.add("hidden");
-        
+
       const container = document.getElementById("google-profile");
       container.innerHTML = `
         <div style="position:relative;">
-        <img id="avatar-btn" src="${picture}" alt="avatar"
-          style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 0 5px #000;" />
-        <div id="profile-dropdown" class="hidden"
-          style="position:absolute; top:50px; right:0; background:var(--input-bg); color:var(--text-color); padding:20px; border-radius:18px; box-shadow:0 2px 15px rgba(0,0,0,0.3); width:300px; text-align:center; font-family:sans-serif;">
-          
-          <div style="font-size:14px; color:gray; margin-bottom:10px;">${email}</div>
-          <img src="${picture}" style="width:70px;height:70px;border-radius:50%;margin-bottom:10px;border:1px solid #ccc;" />
-          <div style="font-weight:bold;font-size:16px;margin-bottom:5px;">${name}</div>
-           
-          <a href="https://myaccount.google.com/" target="_blank"
-             style="display:inline-block; margin:10px 0; padding:8px 12px; border:1px solid #888; border-radius:8px;
-             background:transparent; cursor:pointer; text-decoration:none; color:var(--text-color); font-weight:500;">
-            Управление аккаунтом Google
-          </a>
-             
-          <hr style="margin:12px 0;">
-          <div style="text-align:left; padding-left:10px;">
-            <div style="margin-bottom:8px;"><strong>${name}</strong><br><small>${email}</small></div>
-            <button style="padding:6px 12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">+ Добавить аккаунт</button>
-            <br><br>
-            <button onclick="logoutGoogle()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Выйти из всех аккаунтов</button>
+          <img id="avatar-btn" src="${picture}" alt="avatar"
+               style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 0 5px #000;" />
+          <div id="profile-dropdown" class="hidden"
+               style="position:absolute; top:50px; right:0; background:var(--input-bg); color:var(--text-color); padding:20px; border-radius:18px; box-shadow:0 2px 15px rgba(0,0,0,0.3); width:300px; text-align:center; font-family:sans-serif;">
+            <div style="font-size:14px; color:gray; margin-bottom:10px;">${email}</div>
+            <img src="${picture}" style="width:70px;height:70px;border-radius:50%;margin-bottom:10px;border:1px solid #ccc;" />
+            <div style="font-weight:bold;font-size:16px;margin-bottom:5px;">${name}</div>
+
+            <button onclick="window.open('https://myaccount.google.com/', '_blank')"
+              style="margin:10px 0; padding:8px 12px; border:1px solid #888; border-radius:8px; background:transparent; cursor:pointer;">
+              Управление аккаунтом Google
+            </button>
+
+            <hr style="margin:12px 0;">
+            <div style="text-align:left; padding-left:10px;">
+              <div style="margin-bottom:8px;"><strong>${name}</strong><br><small>${email}</small></div>
+              <button onclick="window.open('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.google.com%3Fhl%3Dru&ec=GAlA8wE&hl=ru&flowName=GlifWebSignIn&flowEntry=AddSession', '_blank')"
+                style="padding:6px 12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">+ Добавить аккаунт</button>
+              <br><br>
+              <button onclick="logoutGoogle()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Выйти из всех аккаунтов</button>
+            </div>
           </div>
         </div>
-      </div>
-    `;
-    
-    document.getElementById("avatar-btn").onclick = () => {
-      document.getElementById("profile-dropdown").classList.toggle("hidden");
-    };
-  } 
+      `;
+      document.getElementById("avatar-btn").onclick = () => {
+        document.getElementById("profile-dropdown").classList.toggle("hidden");
+      };
+    }
      
     function logoutGoogle() {
       localStorage.clear();
