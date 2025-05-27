@@ -11,7 +11,6 @@
       --btn-bg: #dddddd;
       --btn-active: #4c4cff;
     }
-
     body.dark {
       --bg-color: #121212;
       --text-color: #ffffff;
@@ -19,7 +18,6 @@
       --btn-bg: #333333;
       --btn-active: #4c4cff;
     }
-
     body {
       margin: 0;
       background: var(--bg-color);
@@ -32,7 +30,6 @@
       height: 100vh;
       transition: background 0.3s, color 0.3s;
     }
-
     .logo {
       font-size: 60px;
       font-weight: bold;
@@ -40,13 +37,11 @@
       text-shadow: 0 0 10px #bfcfff;
       margin-bottom: 30px;
     }
-
     .search-container {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-
     .search-box {
       display: flex;
       border: 1px solid #ccc;
@@ -55,7 +50,6 @@
       width: 400px;
       background: var(--input-bg);
     }
-
     .search-box input {
       flex: 1;
       border: none;
@@ -64,7 +58,6 @@
       background: transparent;
       color: var(--text-color);
     }
-
     .search-box button {
       background: none;
       border: none;
@@ -72,13 +65,11 @@
       font-size: 18px;
       color: var(--text-color);
     }
-
     .engine-select {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-
     .engine-select button {
       padding: 8px 16px;
       border: none;
@@ -88,12 +79,10 @@
       color: var(--text-color);
       transition: background 0.3s;
     }
-
     .engine-select button.active {
       background: var(--btn-active);
       color: white;
     }
-
     .theme-toggle, .voice-toggle {
       position: absolute;
       top: 20px;
@@ -104,72 +93,9 @@
       color: var(--text-color);
       background: var(--btn-bg);
     }
+    .theme-toggle { right: 20px; }
+    .voice-toggle { right: 100px; }
 
-    .theme-toggle {
-      right: 20px;
-    }
-
-    .voice-toggle {
-      right: 100px;
-    }
-    .user-panel {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-    }
-    #user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    } 
-    #user-info img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-   .menu {
-      position: absolute;
-      background: var(--btn-bg);
-      border-radius: 10px;
-      top: 40px;
-      left: 0;
-      display: flex;
-      flex-direction: column;
-      padding: 5px;
-      z-index: 100;
-    }
-   .menu button {
-      background: none;
-      border: none;
-      color: var(--text-color);
-      padding: 5px 10px;
-      text-align: left;
-      cursor: pointer;
-    }
-   .menu button:hover {
-      background: #66666644;
-    }
-   .hidden {
-      display: none;
-    }
-   .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #00000088;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-   .modal-content {
-      background: var(--input-bg);
-      padding: 20px;
-      border-radius: 10px;
-      color: var(--text-color);
-      box-shadow: 0 0 10px #000;
-    }     
     .bookmarks {
       margin-top: 40px;
       display: flex;
@@ -177,7 +103,6 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
     .bookmarks button {
       padding: 8px 14px;
       border: none;
@@ -187,12 +112,28 @@
       cursor: pointer;
     }
   </style>
-  <!-- Скрипт Google Identity -->
+  <!-- Google OAuth -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   <button class="voice-toggle" onclick="startVoice()">🎤</button>
+  <!-- Google Sign In Button (в правом верхнем углу) -->
+  <div style="position:absolute; top:20px; right:180px; z-index:999;">
+    <div id="g_id_onload"
+         data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="medium"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="circle"
+         data-logo_alignment="center">
+    </div>
+  </div>
   <div class="logo">MoonX</div>
   <div class="search-container">
     <form id="search-form" class="search-box" target="_blank">
@@ -204,178 +145,110 @@
       <button onclick="setEngine('google')">Google</button>
     </div>
   </div>
-
   <div class="bookmarks" id="bookmarks"></div>
-  
   <script>
     let currentEngine = localStorage.getItem('engine') || 'yandex';
     let darkMode = localStorage.getItem('theme') === 'dark';
-
     function applySettings() {
-      if (darkMode) document.body.classList.add('dark');
-      else document.body.classList.remove('dark');
-
-      const engineButtons = document.querySelectorAll('.engine-select button');
-      engineButtons.forEach(btn => btn.classList.remove('active'));
-      if (currentEngine === 'yandex') engineButtons[0].classList.add('active');
-      else engineButtons[1].classList.add('active');
-
+      document.body.classList.toggle('dark', darkMode);
       document.querySelector('.theme-toggle').textContent = darkMode ? '🌞' : '🌙';
+      const buttons = document.querySelectorAll('.engine-select button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      if (currentEngine === 'yandex') buttons[0].classList.add('active');
+      else buttons[1].classList.add('active');
     }
-
     function toggleTheme() {
       darkMode = !darkMode;
       localStorage.setItem('theme', darkMode ? 'dark' : 'light');
       applySettings();
     }
-
     function setEngine(engine) {
       currentEngine = engine;
       localStorage.setItem('engine', engine);
       applySettings();
     }
-
     document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault();
       const query = document.getElementById('search-input').value.trim();
       if (!query) return;
-
-      let url = '';
-      if (currentEngine === 'yandex') {
-        url = 'https://yandex.ru/search/?text=' + encodeURIComponent(query);
-      } else {
-        url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-      }
+      let url = currentEngine === 'yandex'
+        ? `https://yandex.ru/search/?text=${encodeURIComponent(query)}`
+        : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       window.open(url, '_blank');
     });
-
-    // 🎤 Голосовой ввод
     function startVoice() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) return alert('Браузер не поддерживает голосовой ввод');
-
       const recognition = new SpeechRecognition();
       recognition.lang = 'ru-RU';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
       recognition.start();
-
-      recognition.onresult = function (event) {
-        const result = event.results[0][0].transcript;
+      recognition.onresult = e => {
+        const result = e.results[0][0].transcript;
         document.getElementById('search-input').value = result;
       };
-
-      recognition.onerror = function (event) {
-        alert('Ошибка распознавания: ' + event.error);
-      };
+      recognition.onerror = e => alert('Ошибка распознавания: ' + e.error);
     }
-
-    // ⭐ Быстрые закладки
     const defaultBookmarks = [
       { name: 'YouTube', url: 'https://youtube.com' },
       { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
       { name: 'GitHub', url: 'https://github.com' },
       { name: 'ChatGPT', url: 'https://chat.openai.com' }
     ];
-
     function renderBookmarks() {
       const container = document.getElementById('bookmarks');
       container.innerHTML = '';
-      defaultBookmarks.forEach(bookmark => {
+      defaultBookmarks.forEach(b => {
         const btn = document.createElement('button');
-        btn.textContent = bookmark.name;
-        btn.onclick = () => window.open(bookmark.url, '_blank');
+        btn.textContent = b.name;
+        btn.onclick = () => window.open(b.url, '_blank');
         container.appendChild(btn);
       });
-    }          
-    
-    // Google OAuth Обработка
+    }
     function handleCredentialResponse(response) {
       const data = parseJwt(response.credential);
-      const name = data.name;
-      const email = data.email;
-      const picture = data.picture;
-      
-      // Сохраняем в localStorage
-      localStorage.setItem("user_name", name);
-      localStorage.setItem("user_email", email);
-      localStorage.setItem("user_picture", picture);
-      
-      // Перерисовываем
+      localStorage.setItem("user_name", data.name);
+      localStorage.setItem("user_email", data.email);
+      localStorage.setItem("user_picture", data.picture);
       renderGoogleUser();
     }
-    
     function parseJwt(token) {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
     }
-
     function renderGoogleUser() {
       const name = localStorage.getItem("user_name");
       const email = localStorage.getItem("user_email");
       const picture = localStorage.getItem("user_picture");
-    
       if (name && email) {
         document.querySelector(".g_id_signin").style.display = "none";
-        
-        const userPanel = document.createElement("div");
-        userPanel.style.position = "absolute";
-        userPanel.style.top = "20px";
-        userPanel.style.right = "20px";
-        userPanel.style.background = "var(--input-bg)";
-        userPanel.style.padding = "10px";
-        userPanel.style.borderRadius = "12px";
-        userPanel.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
-        userPanel.style.textAlign = "center";
-        
-        userPanel.innerHTML = `
-          <img src="${picture}" alt="avatar" style="width:48px;height:48px;border-radius:50%;"><br>
-          <strong>${name}</strong><br>
-          <small>${email}</small><br>
-          <button onclick="logoutGoogle()" style="margin-top:8px;padding:4px 10px;border-radius:6px;border:none;background:#f66;color:white;cursor:pointer;">Выйти</button>
+        const userBox = document.createElement("div");
+        userBox.style.position = "absolute";
+        userBox.style.top = "20px";
+        userBox.style.right = "20px";
+        userBox.style.background = "var(--input-bg)";
+        userBox.style.padding = "10px";
+        userBox.style.borderRadius = "12px";
+        userBox.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
+        userBox.style.textAlign = "center";
+        userBox.innerHTML = `
+          <img src="${picture}" style="width:48px;height:48px;border-radius:50%;" /><br>
+          <strong>${name}</strong><br><small>${email}</small><br>
+          <button onclick="logoutGoogle()" style="margin-top:8px;padding:4px 10px;border:none;border-radius:6px;background:#f66;color:white;">Выйти</button>
         `;
-
-        document.body.appendChild(userPanel);
+        document.body.appendChild(userBox);
       }
     }
-      
     function logoutGoogle() {
       localStorage.removeItem("user_name");
       localStorage.removeItem("user_email");
       localStorage.removeItem("user_picture");
       location.reload();
     }
-     
-    // Показываем, если уже входил ранее
-    renderGoogleUser();
-      
-    // Применить настройки и отрисовать всё
+    // Запуск
     applySettings();
     renderBookmarks();
+    renderGoogleUser();
   </script>
-
-  <!-- Google Вход -->
-  <div id="g_id_onload"
-       data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
-       data-callback="handleCredentialResponse"
-       data-auto_prompt="false">
-  </div>
-  
-  <div style="position:absolute; top:20px; right:20px; z-index:999;">
-    <div class="g_id_signin"
-         data-type="standard"
-         data-size="medium"
-         data-theme="outline"
-         data-text="sign_in_with"
-         data-shape="circle"
-         data-logo_alignment="center">
-    </div>
-  </div>
-
 </body>
 </html>
