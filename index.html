@@ -16,7 +16,6 @@
       --text-color: #ffffff;
       --input-bg: #1e1e1e;
       --btn-bg: #333333;
-      --btn-active: #4c4cff;
     }
     body {
       margin: 0;
@@ -77,7 +76,6 @@
       background: var(--btn-bg);
       cursor: pointer;
       color: var(--text-color);
-      transition: background 0.3s;
     }
     .engine-select button.active {
       background: var(--btn-active);
@@ -98,18 +96,13 @@
       color: var(--text-color);
       cursor: pointer;
     }
+    .hidden { display: none; }
   </style>
-  <!-- Google OAuth -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <!-- Кнопки темы и голосового ввода в левом верхнем углу -->
-  <div style="position: absolute; top: 20px; left: 20px; display: flex; gap: 10px; z-index: 1000;">
-    <button onclick="toggleTheme()">🌙</button>
-    <button onclick="startVoice()">🎤</button>
-  </div>
-  <!-- Google Sign In Button (в правом верхнем углу) -->
-  <div style="position:absolute; top:20px; right:180px; z-index:999;">
+  <!-- Google Sign-In кнопка -->
+  <div style="position:absolute; top:20px; right:120px; z-index:999;">
     <div id="g_id_onload"
          data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
          data-callback="handleCredentialResponse"
@@ -124,7 +117,12 @@
          data-logo_alignment="center">
     </div>
   </div>
+
+  <!-- Профиль Google -->
+  <div id="google-profile" style="position:absolute; top:20px; right:20px; z-index:1000;"></div>
+
   <div class="logo">MoonX</div>
+
   <div class="search-container">
     <form id="search-form" class="search-box" target="_blank">
       <input type="text" id="search-input" placeholder="Введите запрос..." />
@@ -135,28 +133,24 @@
       <button onclick="setEngine('google')">Google</button>
     </div>
   </div>
+
   <div class="bookmarks" id="bookmarks"></div>
+
   <script>
     let currentEngine = localStorage.getItem('engine') || 'yandex';
-    let darkMode = localStorage.getItem('theme') === 'dark';
-    function applySettings() {
-      document.body.classList.toggle('dark', darkMode);
-      document.querySelector('.theme-toggle').textContent = darkMode ? '🌞' : '🌙';
-      const buttons = document.querySelectorAll('.engine-select button');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      if (currentEngine === 'yandex') buttons[0].classList.add('active');
-      else buttons[1].classList.add('active');
-    }
-    function toggleTheme() {
-      darkMode = !darkMode;
-      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-      applySettings();
-    }
+
     function setEngine(engine) {
       currentEngine = engine;
       localStorage.setItem('engine', engine);
-      applySettings();
+      updateEngineButtons();
     }
+
+    function updateEngineButtons() {
+      document.querySelectorAll('.engine-select button').forEach(btn => btn.classList.remove('active'));
+      if (currentEngine === 'yandex') document.querySelectorAll('.engine-select button')[0].classList.add('active');
+      else document.querySelectorAll('.engine-select button')[1].classList.add('active');
+    }
+
     document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault();
       const query = document.getElementById('search-input').value.trim();
@@ -166,24 +160,14 @@
         : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       window.open(url, '_blank');
     });
-    function startVoice() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return alert('Браузер не поддерживает голосовой ввод');
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'ru-RU';
-      recognition.start();
-      recognition.onresult = e => {
-        const result = e.results[0][0].transcript;
-        document.getElementById('search-input').value = result;
-      };
-      recognition.onerror = e => alert('Ошибка распознавания: ' + e.error);
-    }
+
     const defaultBookmarks = [
       { name: 'YouTube', url: 'https://youtube.com' },
       { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
       { name: 'GitHub', url: 'https://github.com' },
       { name: 'ChatGPT', url: 'https://chat.openai.com' }
     ];
+
     function renderBookmarks() {
       const container = document.getElementById('bookmarks');
       container.innerHTML = '';
@@ -194,6 +178,7 @@
         container.appendChild(btn);
       });
     }
+
     function handleCredentialResponse(response) {
       const data = parseJwt(response.credential);
       localStorage.setItem("user_name", data.name);
@@ -201,43 +186,46 @@
       localStorage.setItem("user_picture", data.picture);
       renderGoogleUser();
     }
+
     function parseJwt(token) {
       const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
       return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
         '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
     }
+
     function renderGoogleUser() {
       const name = localStorage.getItem("user_name");
       const email = localStorage.getItem("user_email");
       const picture = localStorage.getItem("user_picture");
       if (name && email) {
         document.querySelector(".g_id_signin").style.display = "none";
-        const userBox = document.createElement("div");
-        userBox.style.position = "absolute";
-        userBox.style.top = "20px";
-        userBox.style.right = "20px";
-        userBox.style.background = "var(--input-bg)";
-        userBox.style.padding = "10px";
-        userBox.style.borderRadius = "12px";
-        userBox.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
-        userBox.style.textAlign = "center";
-        userBox.innerHTML = `
-          <img src="${picture}" style="width:48px;height:48px;border-radius:50%;" /><br>
-          <strong>${name}</strong><br><small>${email}</small><br>
-          <button onclick="logoutGoogle()" style="margin-top:8px;padding:4px 10px;border:none;border-radius:6px;background:#f66;color:white;">Выйти</button>
+        const container = document.getElementById("google-profile");
+        container.innerHTML = `
+          <div style="position:relative;">
+            <img src="${picture}" id="avatar-btn"
+                 style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 0 5px #000;" />
+            <div id="profile-dropdown" class="hidden"
+                 style="position:absolute; top:50px; right:0; background:var(--input-bg); color:var(--text-color); padding:15px; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.3); width:260px; text-align:center;">
+              <img src="${picture}" style="width:60px;height:60px;border-radius:50%;margin-bottom:10px;" />
+              <div style="font-weight:bold;">${name}</div>
+              <div style="font-size:0.9em; color:gray; margin-bottom:10px;">${email}</div>
+              <button onclick="logoutGoogle()" style="padding:6px 16px; background:#f44336; color:white; border:none; border-radius:8px; cursor:pointer;">Выйти</button>
+            </div>
+          </div>
         `;
-        document.body.appendChild(userBox);
+        document.getElementById("avatar-btn").onclick = () => {
+          document.getElementById("profile-dropdown").classList.toggle("hidden");
+        };
       }
     }
+
     function logoutGoogle() {
-      localStorage.removeItem("user_name");
-      localStorage.removeItem("user_email");
-      localStorage.removeItem("user_picture");
+      localStorage.clear();
       location.reload();
     }
-    // Запуск
-    applySettings();
+
     renderBookmarks();
+    updateEngineButtons();
     renderGoogleUser();
   </script>
 </body>
