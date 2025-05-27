@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>MoonX</title>
+  <style>
+    :root {
+      --bg-color: #f2f2f2;
+      --text-color: #000000;
+      --input-bg: #ffffff;
+      --btn-bg: #dddddd;
+      --btn-active: #4c4cff;
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --input-bg: #1e1e1e;
+      --btn-bg: #333333;
+      --btn-active: #4c4cff;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .logo {
+      font-size: 60px;
+      font-weight: bold;
+      color: var(--btn-active);
+      text-shadow: 0 0 10px #bfcfff;
+      margin-bottom: 30px;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box {
+      display: flex;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      padding: 10px 20px;
+      width: 400px;
+      background: var(--input-bg);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      font-size: 18px;
+      outline: none;
+      background: transparent;
+      color: var(--text-color);
+    }
+
+    .search-box button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+
+    .engine-select {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .engine-select button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      cursor: pointer;
+      color: var(--text-color);
+      transition: background 0.3s;
+    }
+
+    .engine-select button.active {
+      background: var(--btn-active);
+      color: white;
+    }
+
+    .theme-toggle, .voice-toggle {
+      position: absolute;
+      top: 20px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--text-color);
+      background: var(--btn-bg);
+    }
+
+    .theme-toggle {
+      right: 20px;
+    }
+
+    .voice-toggle {
+      right: 100px;
+    }
+
+    .bookmarks {
+      margin-top: 40px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .bookmarks button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      color: var(--text-color);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  <button class="voice-toggle" onclick="startVoice()">🎤</button>
+  <div class="logo">MoonX</div>
+  <div class="search-container">
+    <form id="search-form" class="search-box" target="_blank">
+      <input type="text" id="search-input" placeholder="Введите запрос..." />
+      <button type="submit">🔍</button>
+    </form>
+    <div class="engine-select">
+      <button onclick="setEngine('yandex')">Yandex</button>
+      <button onclick="setEngine('google')">Google</button>
+    </div>
+  </div>
+
+  <div class="bookmarks" id="bookmarks"></div>
+
+  <script>
+    let currentEngine = localStorage.getItem('engine') || 'yandex';
+    let darkMode = localStorage.getItem('theme') === 'dark';
+
+    function applySettings() {
+      if (darkMode) document.body.classList.add('dark');
+      else document.body.classList.remove('dark');
+
+      const engineButtons = document.querySelectorAll('.engine-select button');
+      engineButtons.forEach(btn => btn.classList.remove('active'));
+      if (currentEngine === 'yandex') engineButtons[0].classList.add('active');
+      else engineButtons[1].classList.add('active');
+
+      document.querySelector('.theme-toggle').textContent = darkMode ? '🌞' : '🌙';
+    }
+
+    function toggleTheme() {
+      darkMode = !darkMode;
+      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+      applySettings();
+    }
+
+    function setEngine(engine) {
+      currentEngine = engine;
+      localStorage.setItem('engine', engine);
+      applySettings();
+    }
+
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+
+      let url = '';
+      if (currentEngine === 'yandex') {
+        url = 'https://yandex.ru/search/?text=' + encodeURIComponent(query);
+      } else {
+        url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+      }
+      window.open(url, '_blank');
+    });
+
+    // 🎤 Голосовой ввод
+    function startVoice() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return alert('Браузер не поддерживает голосовой ввод');
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ru-RU';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = function (event) {
+        const result = event.results[0][0].transcript;
+        document.getElementById('search-input').value = result;
+      };
+
+      recognition.onerror = function (event) {
+        alert('Ошибка распознавания: ' + event.error);
+      };
+    }
+
+    // ⭐ Быстрые закладки
+    const defaultBookmarks = [
+      { name: 'YouTube', url: 'https://youtube.com' },
+      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com' }
+    ];
+
+    function renderBookmarks() {
+      const container = document.getElementById('bookmarks');
+      container.innerHTML = '';
+      defaultBookmarks.forEach(bookmark => {
+        const btn = document.createElement('button');
+        btn.textContent = bookmark.name;
+        btn.onclick = () => window.open(bookmark.url, '_blank');
+        container.appendChild(btn);
+      });
+    }
+
+    // Применить настройки и отрисовать всё
+    applySettings();
+    renderBookmarks();
+  </script>
+</body>
+</html>
