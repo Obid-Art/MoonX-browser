@@ -36,6 +36,29 @@
       text-shadow: 0 0 10px #bfcfff;
       margin-bottom: 30px;
     }
+    .uzum-services {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin-top: 20px; /* между MoonX и сервисами */
+      margin-bottom: 40px; /* отступ вниз от сервисов до поля поиска */
+      flex-wrap: wrap;
+    }
+    .uzum-services a {
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+    }
+   .uzum-services img {
+      width: 60px;
+      height: 60px;
+      border-radius: 20%;
+    }
+    .uzum-services div {
+      margin-top: 8px;
+      font-weight: 600;
+      font-family: sans-serif;
+    }
     .search-container {
       display: flex;
       align-items: center;
@@ -133,27 +156,27 @@
 
   <div class="logo">MoonX</div>
 
-<!-- Блок Uzum-сервисов -->
-<div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; margin-top: 40px;">
-  <a href="https://uzum.uz/ru/category/garantiya-nizkikh-cen--937?subCategoryId=10021" target="_blank" style="text-align: center; text-decoration: none; color: inherit;">
-    <img src="icons/uzum-market.png" alt="Uzum Market" style="width: 60px; height: 60px; border-radius: 20%;">
-    <div style="margin-top: 8px; font-weight: 600; font-family: sans-serif;">Uzum Market</div>
+<!-- БЛОК uzum-сервисов -->
+<div class="uzum-services">
+  <a href="https://uzum.uz/ru/category/garantiya-nizkikh-cen--937?subCategoryId=10021" target="_blank">
+    <img src="icons/uzum-market.png" alt="Uzum Market">
+    <div>Uzum Market</div>
   </a>
-  <a href="https://uzumbank.uz/ru/" target="_blank" style="text-align: center; text-decoration: none; color: inherit;">
-    <img src="icons/uzum-bank.png" alt="Uzum Bank" style="width: 60px; height: 60px; border-radius: 20%;">
-    <div style="margin-top: 8px; font-weight: 600; font-family: sans-serif;">Uzum Bank</div>
+  <a href="https://uzumbank.uz/ru/" target="_blank">
+    <img src="icons/uzum-bank.png" alt="Uzum Bank">
+    <div>Uzum Bank</div>
   </a>
-  <a href="https://www.uzumtezkor.uz/ru" target="_blank" style="text-align: center; text-decoration: none; color: inherit;">
-    <img src="icons/uzum-tezkor.png" alt="Uzum Tezkor" style="width: 60px; height: 60px; border-radius: 20%;">
-    <div style="margin-top: 8px; font-weight: 600; font-family: sans-serif;">Uzum Tezkor</div>
+  <a href="https://www.uzumtezkor.uz/ru" target="_blank">
+    <img src="icons/uzum-tezkor.png" alt="Uzum Tezkor">
+    <div>Uzum Tezkor</div>
   </a>
-  <a href="https://webview.uzumavto.uz/uz" target="_blank" style="text-align: center; text-decoration: none; color: inherit;">
-    <img src="icons/uzum-avto.png" alt="Uzum Avto" style="width: 60px; height: 60px; border-radius: 20%;">
-    <div style="margin-top: 8px; font-weight: 600; font-family: sans-serif;">Uzum Avto</div>
+  <a href="https://webview.uzumavto.uz/uz" target="_blank">
+    <img src="icons/uzum-avto.png" alt="Uzum Avto">
+    <div>Uzum Avto</div>
   </a>
-  <a href="https://uzumnasiya.uz/" target="_blank" style="text-align: center; text-decoration: none; color: inherit;">
-    <img src="icons/uzum-nasiya.png" alt="Uzum Nasiya" style="width: 60px; height: 60px; border-radius: 20%;">
-    <div style="margin-top: 8px; font-weight: 600; font-family: sans-serif;">Uzum Nasiya</div>
+  <a href="https://uzumnasiya.uz/" target="_blank">
+    <img src="icons/uzum-nasiya.png" alt="Uzum Nasiya">
+    <div>Uzum Nasiya</div>
   </a>
 </div>
 
