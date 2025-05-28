@@ -185,7 +185,12 @@
       <input type="text" id="search-input" placeholder="Введите запрос..." />
       <button type="submit">🔍</button>
     </form>
-    <div class="engine-select horizontal">
+  
+    <!-- Кнопка для раскрытия поисковика -->
+    <button id="toggle-engine-btn" style="margin-top: 15px;">🔽 Поисковик</button>
+  
+    <!-- Скрываемый блок переключателя -->
+    <div class="engine-select horizontal" id="engine-select" style="display: none;">
       <button onclick="setEngine('yandex')">Yandex</button>
       <button onclick="setEngine('google')">Google</button>
     </div>
@@ -304,12 +309,14 @@
         document.getElementById("profile-dropdown").classList.toggle("hidden");
       };
     }
-     
+     document.getElementById("toggle-engine-btn").addEventListener("click", function () {
+       const panel = document.getElementById("engine-select");
+       panel.style.display = panel.style.display === "none" ? "flex" : "none";
+     });
     function logoutGoogle() {
       localStorage.clear();
       location.reload();
     }
-
     renderBookmarks();
     updateEngineButtons();
     renderGoogleUser();
