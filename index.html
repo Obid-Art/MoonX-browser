@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>MoonX</title>
+  <style>
+    :root {
+      --bg-color: #f2f2f2;
+      --text-color: #000000;
+      --input-bg: #ffffff;
+      --btn-bg: #dddddd;
+      --btn-active: #4c4cff;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --input-bg: #1e1e1e;
+      --btn-bg: #333333;
+    }
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .logo {
+      font-size: 60px;
+      font-weight: bold;
+      color: var(--btn-active);
+      text-shadow: 0 0 10px #bfcfff;
+      margin-bottom: 30px;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-box {
+      display: flex;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      padding: 10px 20px;
+      width: 400px;
+      background: var(--input-bg);
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      font-size: 18px;
+      outline: none;
+      background: transparent;
+      color: var(--text-color);
+    }
+    .search-box button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+    .engine-select {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .engine-select button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    .engine-select button.active {
+      background: var(--btn-active);
+      color: white;
+    }
+    .bookmarks {
+      margin-top: 40px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .bookmarks button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <!-- Переключатель темы в левом верхнем углу -->
+  <div style="position: absolute; top: 20px; left: 20px; z-index: 1000; display: flex; gap: 10px;">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  </div>
+  <!-- Google Sign-In кнопка -->
+  <div id="google-signin-container" style="position:absolute; top:20px; right:120px; z-index:999;">
+    <div id="g_id_onload"
+         data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="medium"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="circle"
+         data-logo_alignment="center">
+    </div>
+  </div>
+  <!-- Профиль Google -->
+  <!-- Google OAuth -->
+  <div id="google-profile" style="position:absolute; top:20px; right:20px; z-index:1000;"></div>
+
+  <div class="logo">MoonX</div>
+
+  <div class="search-container">
+    <form id="search-form" class="search-box" target="_blank">
+      <input type="text" id="search-input" placeholder="Введите запрос..." />
+      <button type="submit">🔍</button>
+    </form>
+    <div class="engine-select">
+      <button onclick="setEngine('yandex')">Yandex</button>
+      <button onclick="setEngine('google')">Google</button>
+    </div>
+  </div>
+
+  <div class="bookmarks" id="bookmarks"></div>
+
+  <script>
+    // Настройки
+    let currentEngine = localStorage.getItem('engine') || 'yandex';
+    const defaultBookmarks = [
+      { name: 'YouTube', url: 'https://youtube.com' },
+      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com' }
+    ];
+
+    function renderBookmarks() {
+      const container = document.getElementById('bookmarks');
+      container.innerHTML = '';
+      defaultBookmarks.forEach(b => {
+        const btn = document.createElement('button');
+        btn.textContent = b.name;
+        btn.onclick = () => window.open(b.url, '_blank');
+        container.appendChild(btn);
+      });
+    }
+
+    function setEngine(engine) {
+      currentEngine = engine;
+      localStorage.setItem('engine', engine);
+      updateEngineButtons();
+    }
+
+    function updateEngineButtons() {
+      document.querySelectorAll('.engine-select button').forEach(btn => btn.classList.remove('active'));
+      if (currentEngine === 'yandex') document.querySelectorAll('.engine-select button')[0].classList.add('active');
+      else document.querySelectorAll('.engine-select button')[1].classList.add('active');
+    }
+
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+      let url = currentEngine === 'yandex'
+        ? `https://yandex.ru/search/?text=${encodeURIComponent(query)}`
+        : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      window.open(url, '_blank');
+    });
+   
+    <!-- Основной JS код -->
+    function toggleTheme() {
+      const darkMode = document.body.classList.toggle('dark');
+      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+      document.querySelector('.theme-toggle').textContent = darkMode ? '☀️' : '🌙';
+    }
+    // Загрузка текущей темы при старте
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        document.querySelector('.theme-toggle').textContent = '☀️';
+      }
+    });    
+
+    function handleCredentialResponse(response) {
+      const data = parseJwt(response.credential);
+      localStorage.setItem("user_name", data.name);
+      localStorage.setItem("user_email", data.email);
+      localStorage.setItem("user_picture", data.picture);
+      renderGoogleUser();
+    }
+
+    function parseJwt(token) {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+    }
+    function renderGoogleUser() {
+      const name = localStorage.getItem("user_name");
+      const email = localStorage.getItem("user_email");
+      const picture = localStorage.getItem("user_picture");
+      if (!name || !email) return;
+         
+      // Скрываем кнопку входа
+      document.getElementById("google-signin-container")?.classList.add("hidden");
+       
+      const container = document.getElementById("google-profile");
+      container.innerHTML = `
+        <div style="position:relative;">
+          <img id="avatar-btn" src="${picture}" alt="avatar"
+               style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 0 5px #000;" />
+          <div id="profile-dropdown" class="hidden"
+               style="position:absolute; top:50px; right:0; background:var(--input-bg); color:var(--text-color); padding:20px; border-radius:18px; box-shadow:0 2px 15px rgba(0,0,0,0.3); width:300px; text-align:center; font-family:sans-serif;">
+            <div style="font-size:14px; color:gray; margin-bottom:10px;">${email}</div>
+            <img src="${picture}" style="width:70px;height:70px;border-radius:50%;margin-bottom:10px;border:1px solid #ccc;" />
+            <div style="font-weight:bold;font-size:16px;margin-bottom:5px;">${name}</div>
+
+            <button onclick="window.open('https://myaccount.google.com/', '_blank')"
+              style="margin:10px 0; padding:8px 12px; border:1px solid #888; border-radius:8px; background:transparent; cursor:pointer;">
+              Управление аккаунтом Google
+            </button>
+
+            <hr style="margin:12px 0;">
+            <div style="text-align:left; padding-left:10px;">
+              <div style="margin-bottom:8px;"><strong>${name}</strong><br><small>${email}</small></div>
+              <button onclick="window.open('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.google.com%3Fhl%3Dru&ec=GAlA8wE&hl=ru&flowName=GlifWebSignIn&flowEntry=AddSession', '_blank')"
+                style="padding:6px 12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">+ Добавить аккаунт</button>
+              <br><br>
+              <button onclick="logoutGoogle()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Выйти из всех аккаунтов</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById("avatar-btn").onclick = () => {
+        document.getElementById("profile-dropdown").classList.toggle("hidden");
+      };
+    }
+     
+    function logoutGoogle() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    renderBookmarks();
+    updateEngineButtons();
+    renderGoogleUser();
+  </script>
+</body>
+</html>
