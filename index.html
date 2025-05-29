@@ -64,28 +64,45 @@
       align-items: center;
       gap: 10px;
     }
-    .search-box {
+    .search-container {
       display: flex;
-      border: 1px solid #ccc;
-      border-radius: 30px;
-      padding: 10px 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
       width: 700px;
-      background: var(--input-bg);
+      border: 2px solid #ccc;
+      border-radius: 28px;
+      padding: 5px 10px;
+      background-color: white;
     }
-    .search-box input {
+    #search-input {
       flex: 1;
+      height: 42px;
       border: none;
-      font-size: 18px;
+      font-size: 16px;
       outline: none;
-      background: transparent;
-      color: var(--text-color);
+      padding-left: 16px;
+      border-radius: 28px;
     }
-    .search-box button {
+    .search-icons {
+      display: flex;
+      gap: 10px;
+      margin-left: 10px;
+    }
+    .icon-button {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 18px;
-      color: var(--text-color);
+      padding: 6px;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+    .icon-button:hover {
+      background: #eee;
     }
     .engine-select.horizontal {
       flex-direction: row !important;
@@ -180,11 +197,26 @@
   </a>
 </div>
 
-  <div class="search-container">
-    <form id="search-form" class="search-box" target="_blank">
-      <input type="text" id="search-input" placeholder="Введите запрос..." />
-      <button type="submit">🔍</button>
-    </form>
+<!-- Search Container with Voice and Camera Icons -->
+<div class="search-container">
+  <form id="search-form" class="search-box" target="_blank">
+    <input type="text" id="search-input" placeholder="Введите запрос..." />
+    <div class="search-icons">
+      <button type="button" class="icon-button" title="Голосовой поиск">
+        <svg viewBox="0 0 32 32" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M27.25 14.05ZM14.302 24.92c-5.19-.803-9.18-5.234-9.3-10.62h2a9 9 0 0 0 17.994 0h2c-.12 5.386-4.11 9.817-9.3 10.62l-.186.03-.482 3.85H14.97l-.482-3.85-.186-.03Z" fill="inherit"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M10 9.05a6 6 0 0 1 12 0v5a6 6 0 0 1-12 0v-5Zm10 5v-5a4 4 0 0 0-8 0v5a4 4 0 1 0 8 0Z" fill="inherit"></path>
+        </svg>
+      </button>
+      <button type="submit" class="icon-button" title="Поиск">
+        <svg viewBox="0 0 32 32" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M27.25 14.05ZM14.302 24.92c-5.19-.803-9.18-5.234-9.3-10.62h2a9 9 0 0 0 17.994 0h2c-.12 5.386-4.11 9.817-9.3 10.62l-.186.03-.482 3.85H14.97l-.482-3.85-.186-.03Z" fill="inherit"></path>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M22.05 16.125a6.05 6.05 0 1 1-12.1 0 6.05 6.05 0 0 1 12.1 0ZM16 20.075a3.95 3.95 0 1 0 0-7.9 3.95 3.95 0 0 0 0 7.9Z" fill="inherit"></path>
+        </svg>
+      </button>
+    </div>
+  </form>
+</div>
   
     <!-- Кнопка для раскрытия поисковика -->
     <button id="toggle-engine-btn" style="margin-top: 15px;">🔽</button>
