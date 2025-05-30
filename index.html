@@ -168,7 +168,27 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <!-- Переключатель темы в левом верхнем углу -->
+  <!-- Верхнее меню справа -->
+  <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 10px; z-index: 999;">
+    <!-- Кнопка сервисов -->
+    <button id="services-btn" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px;">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <circle cx="5" cy="5" r="2" fill="#555"/>
+        <circle cx="12" cy="5" r="2" fill="#555"/>
+        <circle cx="19" cy="5" r="2" fill="#555"/>
+        <circle cx="5" cy="12" r="2" fill="#555"/>
+        <circle cx="12" cy="12" r="2" fill="#555"/>
+        <circle cx="19" cy="12" r="2" fill="#555"/>
+      </svg>
+    </button>
+
+    <!-- Кнопка Войти -->
+    <button id="login-btn" style="padding: 6px 14px; border: none; background: #f0f0f0; border-radius: 16px; cursor: pointer; font-weight: bold;">
+      Войти
+    </button>
+  </div>
+
+  <!-- Переключатель темы в правом нижнем углу -->
   <div style="position: absolute; bottom: 20px; right: 20px; z-index: 1000;">
     <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   </div>
@@ -429,6 +449,62 @@
     renderBookmarks();
     updateEngineButtons();
     renderGoogleUser();
+    // Показ/скрытие панели сервисов
+    document.getElementById("services-btn").onclick = function(e) {
+      e.stopPropagation();
+      const panel = document.getElementById("services-panel");
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+      document.getElementById("login-panel").style.display = "none";
+    };
+     
+    // Показ/скрытие панели входа
+    document.getElementById("login-btn").onclick = function(e) {
+      e.stopPropagation();
+      const panel = document.getElementById("login-panel");
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+      document.getElementById("services-panel").style.display = "none";
+    };
+    
+    // Скрытие при клике вне
+    window.addEventListener("click", function () {
+      document.getElementById("services-panel").style.display = "none";
+      document.getElementById("login-panel").style.display = "none";
+    });
   </script>
+  <!-- Выпадающее меню сервисов -->
+  <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
+    <input type="text" placeholder="найти сервис" style="width:100%; padding:8px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
+      <a href="https://uzum.uz" style="text-align:center; font-size:12px; text-decoration:none; color:black;">
+        <img src="icons/uzum-market.png" width="40" height="40"><br>Market
+      </a>
+      <a href="https://uzumbank.uz" style="text-align:center; font-size:12px; text-decoration:none; color:black;">
+        <img src="icons/uzum-bank.png" width="40" height="40"><br>Bank
+      </a>
+      <a href="https://www.uzumtezkor.uz" style="text-align:center; font-size:12px; text-decoration:none; color:black;">
+        <img src="icons/uzum-tezkor.png" width="40" height="40"><br>Tezkor
+      </a>
+      <a href="https://webview.uzumavto.uz" style="text-align:center; font-size:12px; text-decoration:none; color:black;">
+        <img src="icons/uzum-avto.png" width="40" height="40"><br>Avto
+      </a>
+      <a href="https://uzumnasiya.uz/" style="text-align:center; font-size:12px; text-decoration:none; color:black;">
+        <img src="icons/uzum-nasiya.png" width="40" height="40"><br>Nasiya
+      </a>
+    </div>
+  </div>
+
+  <!-- Выпадающее меню входа -->
+  <div id="login-panel" style="display:none; position:absolute; top:70px; right:100px; background:white; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.2); padding:16px; width:250px; z-index:1000;">
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button onclick="alert('Google Login')" style="padding:10px; border-radius:10px; border:1px solid #ccc; background:white; cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <img src="https://www.google.com/images/branding/googleg/2x/googleg_standard_color_92x30dp.png" height="20">
+        Войти через Google
+      </button>
+      <button onclick="alert('Yandex Login')" style="padding:10px; border-radius:10px; border:1px solid #ccc; background:white; cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <img src="https://yastatic.net/s3/home-static/_/3d/3d44112d54b0a8e78ccfc0a16362f86e.png" width="20" height="20" style="border-radius:50%;">
+        Войти через Yandex
+      </button>
+    </div>
+  </div>
 </body>
 </html>
