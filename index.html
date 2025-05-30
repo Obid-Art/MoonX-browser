@@ -223,6 +223,9 @@
 <!-- Search Container with Voice and Camera Icons -->
 <div class="search-container">
   <form id="search-form" class="search-box" target="_blank">
+    <div id="engine-icon" style="margin-left:10px; cursor:pointer;">
+      <img id="engine-img" src="icons/yandex.png" alt="Yandex" style="width:24px; height:24px; border-radius:50%;" />
+    </div>
     <input type="text" id="search-input" placeholder="Введите запрос..." />
     <div class="search-icons">
       <button type="button" class="icon-button" title="Голосовой поиск">
@@ -239,18 +242,16 @@
       </button>
     </div>
   </form>
-</div>
-  
-    <!-- Кнопка для раскрытия поисковика -->
-    <button id="toggle-engine-btn" style="margin-top: 15px;">🔽</button>
-  
-    <!-- Скрываемый блок переключателя -->
-    <div class="engine-select horizontal" id="engine-select" style="display: none;">
-      <button onclick="setEngine('yandex')">Yandex</button>
-      <button onclick="setEngine('google')">Google</button>
+  <div id="engine-dropdown" style="display:none; position:absolute; top:52%; left:50%; transform:translate(-310px, 20px); background:white; border:1px solid #ccc; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.15); z-index:1000; padding:10px;">
+    <div onclick="setEngine('yandex')" style="display:flex; align-items:center; cursor:pointer; padding:5px;">
+      <img src="icons/yandex.png" alt="Yandex" style="width:24px; height:24px; margin-right:10px;" /> Yandex
+    </div>
+    <div onclick="setEngine('google')" style="display:flex; align-items:center; cursor:pointer; padding:5px;">
+      <img src="icons/google.png" alt="Google" style="width:24px; height:24px; margin-right:10px;" /> Google
     </div>
   </div>
-
+</div>
+  
   <div class="bookmarks" id="bookmarks"></div>
 
   <script>
@@ -280,10 +281,26 @@
       updateEngineButtons();
     }
 
+    document.getElementById("engine-icon").addEventListener("click", function (e) {
+      e.stopPropagation();
+      const dropdown = document.getElementById("engine-dropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    window.addEventListener("click", function () {
+      const dropdown = document.getElementById("engine-dropdown");
+      dropdown.style.display = "none";
+    });
+
     function updateEngineButtons() {
-      document.querySelectorAll('.engine-select button').forEach(btn => btn.classList.remove('active'));
-      if (currentEngine === 'yandex') document.querySelectorAll('.engine-select button')[0].classList.add('active');
-      else document.querySelectorAll('.engine-select button')[1].classList.add('active');
+      const img = document.getElementById("engine-img");
+      if (currentEngine === "yandex") {
+        img.src = "icons/yandex.png";
+        img.alt = "Yandex";
+      } else {
+        img.src = "icons/google.png";
+        img.alt = "Google";
+      }
     }
 
     document.getElementById('search-form').addEventListener('submit', function (e) {
