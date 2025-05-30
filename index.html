@@ -223,9 +223,11 @@
 <!-- Search Container with Voice and Camera Icons -->
 <div class="search-container">
   <form id="search-form" class="search-box" target="_blank">
-    <div id="engine-icon" style="margin-left:10px; cursor:pointer;">
-      <img id="engine-img" src="icons/yandex.png" alt="Yandex" style="width:24px; height:24px; border-radius:50%;" />
-    </div>
+   <div id="engine-icon" style="cursor:pointer; margin-left:5px; display:flex; align-items:center;">
+     <div id="engine-circle" style="width:30px; height:30px; border-radius:50%; background:#F8604A; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-family:sans-serif;">
+       Я
+     </div>
+   </div>
     <input type="text" id="search-input" placeholder="Введите запрос..." />
     <div class="search-icons">
       <button type="button" class="icon-button" title="Голосовой поиск">
@@ -242,16 +244,17 @@
       </button>
     </div>
   </form>
-  <div id="engine-dropdown" style="display:none; position:absolute; top:52%; left:50%; transform:translate(-310px, 20px); background:white; border:1px solid #ccc; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.15); z-index:1000; padding:10px;">
-    <div onclick="setEngine('yandex')" style="display:flex; align-items:center; cursor:pointer; padding:5px;">
-      <img src="icons/yandex.png" alt="Yandex" style="width:24px; height:24px; margin-right:10px;" /> Yandex
+  <div id="engine-dropdown" style="display:none; position:absolute; top:52%; left:50%; transform:translate(-300px, 20px); background:white; border:1px solid #ccc; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.15); z-index:1000; padding:8px;">
+    <div onclick="setEngine('yandex')" style="padding:6px 12px; cursor:pointer; display:flex; align-items:center;">
+      <div style="width:24px; height:24px; border-radius:50%; background:#F8604A; color:#fff; font-weight:bold; display:flex; align-items:center; justify-content:center; margin-right:8px;">Я</div>
+      Яндекс
     </div>
-    <div onclick="setEngine('google')" style="display:flex; align-items:center; cursor:pointer; padding:5px;">
-      <img src="icons/google.png" alt="Google" style="width:24px; height:24px; margin-right:10px;" /> Google
+    <div onclick="setEngine('google')" style="padding:6px 12px; cursor:pointer; display:flex; align-items:center;">
+      <div style="width:24px; height:24px; border-radius:50%; background:#4285F4; color:#fff; font-weight:bold; display:flex; align-items:center; justify-content:center; margin-right:8px;">G</div>
+      Google
     </div>
   </div>
-</div>
-  
+
   <div class="bookmarks" id="bookmarks"></div>
 
   <script>
@@ -274,35 +277,38 @@
         container.appendChild(btn);
       });
     }
-
+    
     function setEngine(engine) {
       currentEngine = engine;
       localStorage.setItem('engine', engine);
-      updateEngineButtons();
-    }
-
+      
+      const icon = document.getElementById('engine-circle');
+      if (engine === 'yandex') {
+        icon.textContent = 'Я';
+        icon.style.background = '#F8604A';
+      } else {
+        icon.textContent = 'G';
+        icon.style.background = '#4285F4';
+      } 
+        
+      document.getElementById("engine-dropdown").style.display = "none";
+    } 
+           
     document.getElementById("engine-icon").addEventListener("click", function (e) {
       e.stopPropagation();
       const dropdown = document.getElementById("engine-dropdown");
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
-
+     
     window.addEventListener("click", function () {
-      const dropdown = document.getElementById("engine-dropdown");
-      dropdown.style.display = "none";
+      document.getElementById("engine-dropdown").style.display = "none";
     });
-
-    function updateEngineButtons() {
-      const img = document.getElementById("engine-img");
-      if (currentEngine === "yandex") {
-        img.src = "icons/yandex.png";
-        img.alt = "Yandex";
-      } else {
-        img.src = "icons/google.png";
-        img.alt = "Google";
-      }
-    }
-
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('engine') || 'yandex';
+      setEngine(saved);
+    });
+    
     document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault();
       const query = document.getElementById('search-input').value.trim();
