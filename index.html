@@ -245,17 +245,36 @@
     </div>
   </form>
 </div>
-  <div id="engine-dropdown" style="display:none; position:absolute; top:52%; left:50%; transform:translate(-300px, 20px); background:white; border:1px solid #ccc; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.15); z-index:1000; padding:8px;">
-    <div onclick="setEngine('yandex')" style="padding:6px 12px; cursor:pointer; display:flex; align-items:center;">
-      <div style="width:24px; height:24px; border-radius:50%; background:#F8604A; color:#fff; font-weight:bold; display:flex; align-items:center; justify-content:center; margin-right:8px;">Я</div>
-      Яндекс
-    </div>
-    <div onclick="setEngine('google')" style="padding:6px 12px; cursor:pointer; display:flex; align-items:center;">
-      <div style="width:24px; height:24px; border-radius:50%; background:#4285F4; color:#fff; font-weight:bold; display:flex; align-items:center; justify-content:center; margin-right:8px;">G</div>
-      Google
-    </div>
+<div id="engine-dropdown" style="
+  display:none;
+  position: absolute;
+  top: 72px;
+  left: 36px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  z-index: 1000;
+  padding: 8px;
+  width: 130px;
+">
+  <!-- Яндекс -->
+  <div onclick="setEngine('yandex')" style="padding:6px 10px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+    <div style="width:24px; height:24px; border-radius:50%; background:#F8604A; color:#fff; font-weight:bold; display:flex; align-items:center; justify-content:center;">Я</div>
+    <span style="color:#000; font-weight:500;">Яндекс</span>
   </div>
 
+  <!-- Google -->
+  <div onclick="setEngine('google')" style="padding:6px 10px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
+      <path fill="#4285F4" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.2 6.3 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.2-.1-2.1-.4-3.5z"/>
+      <path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.4 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.2 6.3 29.4 4 24 4 16.1 4 9.1 8.6 6.3 14.7z"/>
+      <path fill="#FBBC05" d="M24 44c5.4 0 10.2-2.1 13.8-5.5l-6.4-5.3C29.9 34.7 27 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.2 39.6 16 44 24 44z"/>
+      <path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.1 3.1-3.3 5.5-6.3 6.8l6.4 5.3C40.4 35.3 44 30.2 44 24c0-1.2-.1-2.1-.4-3.5z"/>
+    </svg>
+    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" height="20" />
+  </div>
+</div>
   <div class="bookmarks" id="bookmarks"></div>
 
   <script>
@@ -278,38 +297,45 @@
         container.appendChild(btn);
       });
     }
-    
+       
     function setEngine(engine) {
       currentEngine = engine;
       localStorage.setItem('engine', engine);
-      
+             
       const icon = document.getElementById('engine-circle');
       if (engine === 'yandex') {
         icon.textContent = 'Я';
         icon.style.background = '#F8604A';
       } else {
-        icon.textContent = 'G';
-        icon.style.background = '#4285F4';
-      } 
-        
-      document.getElementById("engine-dropdown").style.display = "none";
-    } 
+        icon.innerHTML = ''; // очищаем
+        icon.style.background = 'transparent';
+        icon.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#4285F4" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.2 6.3 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.2-.1-2.1-.4-3.5z"/>
+            <path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.4 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.2 6.3 29.4 4 24 4 16.1 4 9.1 8.6 6.3 14.7z"/>
+            <path fill="#FBBC05" d="M24 44c5.4 0 10.2-2.1 13.8-5.5l-6.4-5.3C29.9 34.7 27 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.2 39.6 16 44 24 44z"/>
+            <path fill="#EA4335" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.1 3.1-3.3 5.5-6.3 6.8l6.4 5.3C40.4 35.3 44 30.2 44 24c0-1.2-.1-2.1-.4-3.5z"/>
+          </svg>`;
+      }
            
+      document.getElementById("engine-dropdown").style.display = "none";
+    }
+             
     document.getElementById("engine-icon").addEventListener("click", function (e) {
       e.stopPropagation();
       const dropdown = document.getElementById("engine-dropdown");
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
-     
+        
     window.addEventListener("click", function () {
       document.getElementById("engine-dropdown").style.display = "none";
     });
-    
+       
     window.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem('engine') || 'yandex';
       setEngine(saved);
     });
-    
+       
     document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault();
       const query = document.getElementById('search-input').value.trim();
@@ -319,7 +345,7 @@
         : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
       window.open(url, '_blank');
     });
-   
+     
     <!-- Основной JS код -->
     function toggleTheme() {
       const darkMode = document.body.classList.toggle('dark');
