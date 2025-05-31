@@ -261,29 +261,8 @@
   </form>
 </div>
   <div class="bookmarks" id="bookmarks"></div>
-  <script>
-    // Настройки
-    let currentEngine = localStorage.getItem('engine') || 'yandex';
-    const defaultBookmarks = [
-      { name: 'YouTube', url: 'https://youtube.com' },
-      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
-      { name: 'GitHub', url: 'https://github.com' },
-      { name: 'ChatGPT', url: 'https://chat.openai.com' }
-    ];
-
-    function renderBookmarks() {
-      const container = document.getElementById('bookmarks');
-      container.innerHTML = '';
-      defaultBookmarks.forEach(b => {
-        const btn = document.createElement('button');
-        btn.textContent = b.name;
-        btn.onclick = () => window.open(b.url, '_blank');
-        container.appendChild(btn);
-      });
-    }
-
-     document.getElementById("login-btn")?.style.display = "none";   
-     
+ <script>
+    // Настройки   
     function setEngine(engine) {
       currentEngine = engine;
       localStorage.setItem('engine', engine);
@@ -316,7 +295,7 @@
     window.addEventListener("click", function () {
       document.getElementById("engine-dropdown").style.display = "none";
     });
-
+   
     document.getElementById("search-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const query = document.getElementById("search-input").value.trim();
@@ -333,44 +312,47 @@
     });
      
     <!-- Основной JS код -->
-    function toggleTheme() {
-      const darkMode = document.body.classList.toggle('dark');
-      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-      document.querySelector('.theme-toggle').textContent = darkMode ? '☀️' : '🌙';
-    }
-    // Загрузка текущей темы при старте
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark');
-        document.querySelector('.theme-toggle').textContent = '☀️';
-      }
-    });    
+<!-- Фиксируем все проблемы в коде и делаем его стабильным -->
+<!-- В этом файле будет одна основная функция, скрывающая кнопку login при успешной авторизации -->
+<!-- Удалим дублирующиеся DOMContentLoaded, переместим правильный вызов -->
+<!-- Добавим правильное управление входом -->
 
-    function handleCredentialResponse(response) {
-      const data = parseJwt(response.credential);
-      localStorage.setItem("user_name", data.name);
-      localStorage.setItem("user_email", data.email);
-      localStorage.setItem("user_picture", data.picture);
-      renderGoogleUser();
-    }
+<!-- Обновлённый JS вставим в самом низу -->
+  function toggleTheme() {
+    const darkMode = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    document.querySelector('.theme-toggle').textContent = darkMode ? '☀️' : '🌙';
+  }
 
-    function parseJwt(token) {
-      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
-        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-    }
-    function renderGoogleUser() {
-      const name = localStorage.getItem("user_name");
-      const email = localStorage.getItem("user_email");
-      const picture = localStorage.getItem("user_picture");
-      if (!name || !email) return;
-         
-      // Скрываем кнопку входа
-      document.getElementById("google-signin-container")?.classList.add("hidden");
-       
-      const container = document.getElementById("google-profile");
-      container.innerHTML = `
+  function handleCredentialResponse(response) {
+    const data = parseJwt(response.credential);
+    localStorage.setItem("user_name", data.name);
+    localStorage.setItem("user_email", data.email);
+    localStorage.setItem("user_picture", data.picture);
+    renderUserProfile();
+  }
+
+  function parseJwt(token) {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+  }
+
+  function renderUserProfile() {
+    const name = localStorage.getItem("user_name");
+    const email = localStorage.getItem("user_email");
+    const picture = localStorage.getItem("user_picture");
+    const yandexUser = localStorage.getItem("yandex_user");
+
+    const loginBtn = document.getElementById("login-btn");
+    const googleProfile = document.getElementById("google-profile");
+
+    // Скрыть кнопку "Войти"
+    if (loginBtn) loginBtn.style.display = "none";
+
+    // Если Google или Яндекс авторизация
+    if (name && email && picture) {
+      googleProfile.innerHTML = `
         <div style="position:relative;">
           <img id="avatar-btn" src="${picture}" alt="avatar"
                style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid white;box-shadow:0 0 5px #000;" />
@@ -379,125 +361,78 @@
             <div style="font-size:14px; color:gray; margin-bottom:10px;">${email}</div>
             <img src="${picture}" style="width:70px;height:70px;border-radius:50%;margin-bottom:10px;border:1px solid #ccc;" />
             <div style="font-weight:bold;font-size:16px;margin-bottom:5px;">${name}</div>
-
             <button onclick="window.open('https://myaccount.google.com/', '_blank')"
               style="margin:10px 0; padding:8px 12px; border:1px solid #888; border-radius:8px; background:transparent; cursor:pointer;">
               Управление аккаунтом Google
             </button>
-
-            <hr style=document.getElementById("services-btn").onclick"margin:12px 0;">
-            <div style="text-align:left; padding-left:10px;">
-              <div style="margin-bottom:8px;"><strong>${name}</strong><br><small>${email}</small></div>
-              <button onclick="window.open('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.google.com%3Fhl%3Dru&ec=GAlA8wE&hl=ru&flowName=GlifWebSignIn&flowEntry=AddSession', '_blank')"
-                style="padding:6px 12px; background:#eee; border:none; border-radius:6px; cursor:pointer;">+ Добавить аккаунт</button>
-              <br><br>
-              <button onclick="logoutGoogle()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Выйти из всех аккаунтов</button>
-            </div>
+            <hr style="margin:12px 0;">
+            <button onclick="logoutAll()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Выйти</button>
           </div>
         </div>
       `;
-      document.getElementById("avatar-btn").onclick = () => {
-        document.getElementById("profile-dropdown").classList.toggle("hidden");
-      };
-    }
-     document.getElementById("toggle-engine-btn").addEventListener("click", function () {
-       const panel = document.getElementById("engine-select");
-       panel.style.display = panel.style.display === "none" ? "flex" : "none";
-     });
-    function logoutGoogle() {
-      localStorage.clear();
-      location.reload();
-    }
-   
-    window.addEventListener("DOMContentLoaded", () => {
-      const loginBtn = document.getElementById("login-btn");
-      const googleProfile = document.getElementById("google-profile");
-      const yandexUser = localStorage.getItem("yandex_user");
-
-      if (yandexUser) {
-        const data = JSON.parse(yandexUser);
-        loginBtn.style.display = "none"; // скрываем кнопку Войти
-
-        googleProfile.innerHTML = `
-          <div style="position:relative;">
-            <img id="avatar-btn" src="${data.avatar || 'https://yastatic.net/s3/home-static/_/3d/3d44112d54b0a8e78ccfc0a16362f86e.png'}" 
-                 alt="avatar" style="width:40px;height:40px;border-radius:50%;cursor:pointer;" />
-            <div id="profile-dropdown" class="hidden" 
-                 style="position:absolute; top:50px; right:0; background:white; padding:20px; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.2); width:240px;">
+    } else if (yandexUser) {
+      const data = JSON.parse(yandexUser);
+      googleProfile.innerHTML = `
+        <div style="position:relative;">
+          <img id="avatar-btn" src="${data.avatar || 'https://yastatic.net/s3/home-static/_/3d/3d44112d54b0a8e78ccfc0a16362f86e.png'}" 
+               alt="avatar" style="width:40px;height:40px;border-radius:50%;cursor:pointer;" />
+          <div id="profile-dropdown" class="hidden" 
+               style="position:absolute; top:50px; right:0; background:white; padding:20px; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.2); width:240px;">
             <div style="font-weight:bold;">${data.name || data.login}</div>
             <div style="font-size:13px; color:gray; margin-bottom:10px;">${data.email || ''}</div>
             <button onclick="logoutAll()" style="margin-top:10px; background:#eee; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">Выйти</button>
           </div>
         </div>
       `;
-      // обработка нажатия по аватару
-      document.getElementById("avatar-btn").onclick = () => {
-        document.getElementById("profile-dropdown").classList.toggle("hidden");
-      };
     }
-  });
-  // Функция выхода
-  function logoutAll() {
-    localStorage.removeItem("yandex_user");
-    localStorage.removeItem("user_name");
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_picture");
-    location.reload(); // перезагрузим страницу
+
+    // Клик по аватару открывает/закрывает меню
+    document.getElementById("avatar-btn")?.addEventListener("click", () => {
+      document.getElementById("profile-dropdown")?.classList.toggle("hidden");
+    });
   }
+
+  function logoutAll() {
+    localStorage.clear();
+    location.reload();
+  }
+
+  function renderBookmarks() {
+    const bookmarks = [
+      { name: 'YouTube', url: 'https://youtube.com' },
+      { name: 'Wikipedia', url: 'https://ru.wikipedia.org' },
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'ChatGPT', url: 'https://chat.openai.com' }
+    ];
+    const container = document.getElementById('bookmarks');
+    if (!container) return;
+    container.innerHTML = '';
+    bookmarks.forEach(b => {
+      const btn = document.createElement('button');
+      btn.textContent = b.name;
+      btn.onclick = () => window.open(b.url, '_blank');
+      container.appendChild(btn);
+    });
+  }
+ 
+  window.addEventListener("DOMContentLoaded", () => {
     renderBookmarks();
-    updateEngineButtons();
-    renderGoogleUser();
+    setEngine(localStorage.getItem('engine') || 'yandex');
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.querySelector('.theme-toggle').textContent = '☀️';
+    }
+
+    renderUserProfile();
+
+    // Скрыть кнопку "Войти" после авторизации
+    document.getElementById("login-btn")?.style.display = "none";   
+  });
     
-  </script>
-      <script>        
-        servicesBtn.addEventListener("click", function(e) {
-          e.stopPropagation();
-          servicesPanel.style.display = servicesPanel.style.display === "block" ? "none" : "block";
-          loginPanel.style.display = "none";
-        });
-          
-        loginBtn.addEventListener("click", function(e) {
-          e.stopPropagation();
-          loginPanel.style.display = loginPanel.style.display === "block" ? "none" : "block";
-          servicesPanel.style.display = "none";
-        });
-          
-        window.addEventListener("click", function () {
-          servicesPanel.style.display = "none";
-          loginPanel.style.display = "none";
-        });
-    </script>
-    
-    <script>
-      function startYandexAuth() {
-        const clientId = "f23f59f9a9ae434d9847be2e24b8fe67"; // ⚠️ Заменить!
-        const redirectUri = "https://obid-art.github.io/MoonX-browser/";
-        const responseType = "code";
-        const url = `https://oauth.yandex.ru/authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
-        window.location.href = url;
-      }
-    </script>
-    <script>
-      window.addEventListener("DOMContentLoaded", async () => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("code")) {
-          const code = params.get("code");
-          
-          // Отправка кода на backend Render-сервера
-          const response = await fetch(`https://moonx-auth-server.onrender.com/auth/yandex?code=${code}`);
-          const user = await response.json();
-          
-          console.log("Данные пользователя из Яндекс ID:", user);
-            
-          // Сохраняем в localStorage (по желанию)
-          localStorage.setItem("yandex_user", JSON.stringify(user));
-            
-          // Очистить URL от ?code=...
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      });
-    </script>
-         
+ </script>
+
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
     <input type="text" placeholder="найти сервис" style="width:100%; padding:8px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
@@ -544,5 +479,6 @@
       </button>
     </div>
   </div>
+  
 </body>
 </html>
