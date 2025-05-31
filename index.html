@@ -449,13 +449,7 @@
     renderGoogleUser();
     
   </script>
-      <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        const servicesBtn = document.getElementById("services-btn");
-        const loginBtn = document.getElementById("login-btn");
-        const servicesPanel = document.getElementById("services-panel");
-        const loginPanel = document.getElementById("login-panel");
-         
+      <script>        
         servicesBtn.addEventListener("click", function(e) {
           e.stopPropagation();
           servicesPanel.style.display = servicesPanel.style.display === "block" ? "none" : "block";
@@ -472,7 +466,6 @@
           servicesPanel.style.display = "none";
           loginPanel.style.display = "none";
         });
-      });
     </script>
     
     <script>
