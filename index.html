@@ -341,10 +341,14 @@
             
     const loginBtn = document.getElementById("login-btn");
     const googleProfile = document.getElementById("google-profile");
-         
-    // Скрыть кнопку "Войти"
-    if (loginBtn) loginBtn.style.display = "none";
-         
+    
+    // Скрыть кнопку Войти после авторизации     
+    if ((name && email && picture) || yandexUser) {
+      loginBtn.style.display = "none";
+    } else {
+      loginBtn.style.display = "inline-block";
+    }
+            
     // Если Google или Яндекс авторизация
     if (name && email && picture) {
       googleProfile.innerHTML = `
