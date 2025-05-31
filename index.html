@@ -407,10 +407,46 @@
       localStorage.clear();
       location.reload();
     }
+   
+    window.addEventListener("DOMContentLoaded", () => {
+      const loginBtn = document.getElementById("login-btn");
+      const googleProfile = document.getElementById("google-profile");
+      const yandexUser = localStorage.getItem("yandex_user");
+
+      if (yandexUser) {
+        const data = JSON.parse(yandexUser);
+        loginBtn.style.display = "none"; // скрываем кнопку Войти
+
+        googleProfile.innerHTML = `
+          <div style="position:relative;">
+            <img id="avatar-btn" src="${data.avatar || 'https://yastatic.net/s3/home-static/_/3d/3d44112d54b0a8e78ccfc0a16362f86e.png'}" 
+                 alt="avatar" style="width:40px;height:40px;border-radius:50%;cursor:pointer;" />
+            <div id="profile-dropdown" class="hidden" 
+                 style="position:absolute; top:50px; right:0; background:white; padding:20px; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.2); width:240px;">
+            <div style="font-weight:bold;">${data.name || data.login}</div>
+            <div style="font-size:13px; color:gray; margin-bottom:10px;">${data.email || ''}</div>
+            <button onclick="logoutAll()" style="margin-top:10px; background:#eee; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">Выйти</button>
+          </div>
+        </div>
+      `;
+      // обработка нажатия по аватару
+      document.getElementById("avatar-btn").onclick = () => {
+        document.getElementById("profile-dropdown").classList.toggle("hidden");
+      };
+    }
+  });
+  // Функция выхода
+  function logoutAll() {
+    localStorage.removeItem("yandex_user");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_picture");
+    location.reload(); // перезагрузим страницу
+  }
     renderBookmarks();
     updateEngineButtons();
     renderGoogleUser();
-
+    
   </script>
       <script>
       window.addEventListener('DOMContentLoaded', () => {
