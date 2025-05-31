@@ -306,12 +306,7 @@
       window.open(url, '_blank');
     });
                     
-    <!-- Основной JS код -->
-  <!-- Фиксируем все проблемы в коде и делаем его стабильным -->
-  <!-- В этом файле будет одна основная функция, скрывающая кнопку login при успешной авторизации -->
-  <!-- Удалим дублирующиеся DOMContentLoaded, переместим правильный вызов -->
-  <!-- Добавим правильное управление входом -->
-              
+    <!-- Основной JS код -->            
   <!-- Обновлённый JS вставим в самом низу -->
   function toggleTheme() {
     const darkMode = document.body.classList.toggle('dark');
@@ -439,7 +434,30 @@
       const panel = document.getElementById("services-panel");
       panel.style.display = panel.style.display === "block" ? "none" : "block";
     });
-   });
+    // Скрытие панелей при клике вне их
+    document.addEventListener("click", (event) => {
+      const loginPanel = document.getElementById("login-panel");
+      const servicesPanel = document.getElementById("services-panel");
+          
+      if (
+        loginPanel &&
+        loginPanel.style.display === "block" &&
+        !loginPanel.contains(event.target) &&
+        !loginBtn.contains(event.target)
+      ) {
+        loginPanel.style.display = "none";
+      }
+         
+      if (
+        servicesPanel &&
+        servicesPanel.style.display === "block" &&
+        !servicesPanel.contains(event.target) &&
+        !servicesBtn.contains(event.target)
+      ) {
+        servicesPanel.style.display = "none";
+      }
+     });
+  });    
  </script>
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
