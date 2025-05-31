@@ -384,7 +384,7 @@
               Управление аккаунтом Google
             </button>
 
-            <hr style="margin:12px 0;">
+            <hr style=document.getElementById("services-btn").onclick"margin:12px 0;">
             <div style="text-align:left; padding-left:10px;">
               <div style="margin-bottom:8px;"><strong>${name}</strong><br><small>${email}</small></div>
               <button onclick="window.open('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fwww.google.com%3Fhl%3Dru&ec=GAlA8wE&hl=ru&flowName=GlifWebSignIn&flowEntry=AddSession', '_blank')"
@@ -410,28 +410,33 @@
     renderBookmarks();
     updateEngineButtons();
     renderGoogleUser();
-    // Показ/скрытие панели сервисов
-    document.getElementById("services-btn").onclick = function(e) {
-      e.stopPropagation();
-      const panel = document.getElementById("services-panel");
-      panel.style.display = panel.style.display === "block" ? "none" : "block";
-      document.getElementById("login-panel").style.display = "none";
-    };
-     
-    // Показ/скрытие панели входа
-    document.getElementById("login-btn").onclick = function(e) {
-      e.stopPropagation();
-      const panel = document.getElementById("login-panel");
-      panel.style.display = panel.style.display === "block" ? "none" : "block";
-      document.getElementById("services-panel").style.display = "none";
-    };
-    
-    // Скрытие при клике вне
-    window.addEventListener("click", function () {
-      document.getElementById("services-panel").style.display = "none";
-      document.getElementById("login-panel").style.display = "none";
-    });
+
   </script>
+      <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const servicesBtn = document.getElementById("services-btn");
+        const loginBtn = document.getElementById("login-btn");
+        const servicesPanel = document.getElementById("services-panel");
+        const loginPanel = document.getElementById("login-panel");
+         
+        servicesBtn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          servicesPanel.style.display = servicesPanel.style.display === "block" ? "none" : "block";
+          loginPanel.style.display = "none";
+        });
+          
+        loginBtn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          loginPanel.style.display = loginPanel.style.display === "block" ? "none" : "block";
+          servicesPanel.style.display = "none";
+        });
+          
+        window.addEventListener("click", function () {
+          servicesPanel.style.display = "none";
+          loginPanel.style.display = "none";
+        });
+      });
+    </script>
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
     <input type="text" placeholder="найти сервис" style="width:100%; padding:8px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
