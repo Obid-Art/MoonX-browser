@@ -192,22 +192,7 @@
   <div style="position: absolute; bottom: 20px; right: 20px; z-index: 1000;">
     <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   </div>
-  <!-- Google Sign-In кнопка -->
-  <div id="google-signin-container" style="position:absolute; top:20px; right:120px; z-index:999;">
-    <div id="g_id_onload"
-         data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin"
-         data-type="standard"
-         data-size="medium"
-         data-theme="outline"
-         data-text="sign_in_with"
-         data-shape="circle"
-         data-logo_alignment="center">
-    </div>
-  </div>
+
   <!-- Профиль Google -->
   <!-- Google OAuth -->
   <div id="google-profile" style="position:absolute; top:20px; right:20px; z-index:1000;"></div>
@@ -495,10 +480,21 @@
   <!-- Выпадающее меню входа -->
   <div id="login-panel" style="display:none; position:absolute; top:70px; right:100px; background:white; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.2); padding:16px; width:250px; z-index:1000;">
     <div style="display:flex; flex-direction:column; gap:10px;">
-      <button onclick="alert('Google Login')" style="padding:10px; border-radius:10px; border:1px solid #ccc; background:white; cursor:pointer; display:flex; align-items:center; gap:10px;">
-        <img src="https://www.google.com/images/branding/googleg/2x/googleg_standard_color_92x30dp.png" height="20">
-        Войти через Google
-      </button>
+      <!-- Новый Google Sign-In -->
+      <div id="g_id_onload"
+           data-client_id="617555845778-kfgn7cnrc7sdc4stme1as1tfiu3bod8f.apps.googleusercontent.com"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-shape="pill"
+           data-logo_alignment="left">
+      </div>
+
       <button onclick="alert('Yandex Login')" style="padding:10px; border-radius:10px; border:1px solid #ccc; background:white; cursor:pointer; display:flex; align-items:center; gap:10px;">
         <img src="https://yastatic.net/s3/home-static/_/3d/3d44112d54b0a8e78ccfc0a16362f86e.png" width="20" height="20" style="border-radius:50%;">
         Войти через Yandex
