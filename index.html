@@ -437,6 +437,37 @@
         });
       });
     </script>
+    
+    <script>
+      function startYandexAuth() {
+        const clientId = "f23f59f9a9ae434d9847be2e24b8fe67"; // ⚠️ Заменить!
+        const redirectUri = "https://obid-art.github.io/MoonX-browser/";
+        const responseType = "code";
+        const url = `https://oauth.yandex.ru/authorize?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}`;
+        window.location.href = url;
+      }
+    </script>
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("code")) {
+          const code = params.get("code");
+          
+          // Отправка кода на backend Render-сервера
+          const response = await fetch(`https://moonx-auth-server.onrender.com/auth/yandex?code=${code}`);
+          const user = await response.json();
+          
+          console.log("Данные пользователя из Яндекс ID:", user);
+            
+          // Сохраняем в localStorage (по желанию)
+          localStorage.setItem("yandex_user", JSON.stringify(user));
+            
+          // Очистить URL от ?code=...
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      });
+    </script>
+             
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
     <input type="text" placeholder="найти сервис" style="width:100%; padding:8px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
