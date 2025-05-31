@@ -503,7 +503,19 @@
         }
       });
     </script>
-             
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const loginBtn = document.getElementById("login-btn");
+        const yandexUser = localStorage.getItem("yandex_user");
+        const googleUser = localStorage.getItem("user_name");
+
+       // если пользователь вошёл через Яндекс или Google
+       if (yandexUser || googleUser) {
+         loginBtn.style.display = "none"; // скрыть кнопку "Войти"
+       }
+     });
+     </script>
+         
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
     <input type="text" placeholder="найти сервис" style="width:100%; padding:8px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #ccc;">
