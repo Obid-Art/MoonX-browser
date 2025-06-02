@@ -414,31 +414,37 @@
   window.addEventListener("DOMContentLoaded", () => {
     renderBookmarks();
     setEngine(currentEngine);
-    
+     
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark');
       document.querySelector('.theme-toggle').textContent = '☀️';
     }
-    
+     
     renderUserProfile();
-    
-    // Кнопка "Войти" открывает панель входа
-    document.getElementById("login-btn").addEventListener("click", () => {
+     
+    // Кнопки
+    const loginBtn = document.getElementById("login-btn");
+    const servicesBtn = document.getElementById("services-btn");
+       
+    // Открытие панелей
+    loginBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
       const panel = document.getElementById("login-panel");
       panel.style.display = panel.style.display === "block" ? "none" : "block";
     });
-    
-    // Кнопка "Сервисы" открывает панель сервисов
-    document.getElementById("services-btn").addEventListener("click", () => {
+        
+    servicesBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
       const panel = document.getElementById("services-panel");
       panel.style.display = panel.style.display === "block" ? "none" : "block";
     });
-    // Скрытие панелей при клике вне их
+          
+    // Закрытие при клике вне
     document.addEventListener("click", (event) => {
       const loginPanel = document.getElementById("login-panel");
       const servicesPanel = document.getElementById("services-panel");
-          
+         
       if (
         loginPanel &&
         loginPanel.style.display === "block" &&
@@ -456,8 +462,8 @@
       ) {
         servicesPanel.style.display = "none";
       }
-     });
-  });    
+    });
+  });
  </script>
   <!-- Выпадающее меню сервисов -->
   <div id="services-panel" style="display:none; position:absolute; top:70px; right:20px; width:300px; background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,0.15); padding:20px; z-index:1000;">
